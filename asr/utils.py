@@ -45,5 +45,3 @@ def save_mp3_file(file, upload_folder="uploaded_files"):
 
     file.stream.seek(0)
     file.save(file_path)
-
-    return file_path

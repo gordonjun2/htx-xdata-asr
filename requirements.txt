@@ -1,4 +1,17 @@
 Flask==3.1.1
 Werkzeug==3.1.3
-mutagen==1.47.0
-ffmpeg-python==0.2.0
+transformers==4.52.4
+torch==2.7.0
+torchaudio==2.7.0
+huggingface-hub==0.32.3
+soundfile==0.13.1
+
+# Install ffmpeg
+# For macOS: brew install ffmpeg
+# For Ubuntu: sudo apt install ffmpeg
+# For Windows: Download from https://ffmpeg.org/download.html and add to PATH
+
+# Install sox
+# For macOS: brew install sox
+# For Ubuntu: sudo apt install sox libsox-fmt-mp3
+# For Windows: Download from https://sourceforge.net/projects/sox/files/sox/ and add to PATH

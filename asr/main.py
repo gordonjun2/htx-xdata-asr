@@ -1,10 +1,29 @@
 from flask import Flask, request
 from werkzeug.exceptions import HTTPException
 from utils import *
-from asr_api import (transcribe_audio, validate_mp3, get_sampling_rate,
-                     REQUIRED_SAMPLING_RATE)
+from asr_api import (transcribe_audio, REQUIRED_SAMPLING_RATE)
+import torchaudio
+import io
+import requests
+from transformers import Wav2Vec2Processor, Wav2Vec2ForCTC
+from huggingface_hub import configure_http_backend
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 app = Flask(__name__)
+
+
+def backend_factory() -> requests.Session:
+    session = requests.Session()
+    session.verify = False
+    return session
+
+
+configure_http_backend(backend_factory=backend_factory)
+
+processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-960h")
+model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-large-960h")
 
 
 @app.route('/ping', methods=['GET'])
@@ -19,40 +38,32 @@ def asr():
     if 'file' not in request.files:
         return make_response(code=400, message="Missing 'file' as an input")
 
+    # Only one file is allowed
     file = request.files['file']
 
     # Check if the type of the file is mp3
-    if file.content_type not in ['audio/mpeg', 'audio/mp3', 'audio/mpeg3']:
+    if file.mimetype not in ['audio/mpeg', 'audio/mp3', 'audio/mpeg3']:
         return make_response(code=400,
                              message="Invalid file type, only mp3 allowed")
 
     audio_bytes = file.read()
 
-    # Verify if the file is a valid MP3 audio
-    is_valid = validate_mp3(audio_bytes)
-    if not is_valid:
+    # Load the audio file using torchaudio
+    try:
+        waveform, sampling_rate = torchaudio.load(io.BytesIO(audio_bytes),
+                                                  format="mp3")
+    except:
         return make_response(code=400,
                              message="Uploaded file is not a valid MP3 audio")
 
-    # Save mp3 file
-    file_path = save_mp3_file(file)
-
-    # Verify if the sampling rate of the MP3 file is correct (16 kHz)
-    sampling_rate = get_sampling_rate(file_path)
-    if sampling_rate is None:
-        return make_response(
-            code=400,
-            message="Could not determine the sampling rate of the MP3 file")
-    elif sampling_rate != REQUIRED_SAMPLING_RATE:
-        logger.warning(
-            f"MP3 sampling rate is {sampling_rate} Hz, but {REQUIRED_SAMPLING_RATE} Hz is required. Resampling will be performed."
-        )
+    # Save mp3 file after checking its validity
+    save_mp3_file(file)
 
     # ASR Logic
-    result = transcribe_audio(audio_bytes)
+    result = transcribe_audio(waveform, sampling_rate, processor, model)
 
     logger.info(
-        f"Processed audio file: {file.filename}\n\nTranscription: {result.get('transcription')}\n\nDuration: {result.get('duration')}s"
+        f"\nProcessed audio file: {file.filename}\n\nTranscription: {result.get('transcription')}\n\nDuration: {result.get('duration')}s"
     )
 
     return make_response(data=result)
