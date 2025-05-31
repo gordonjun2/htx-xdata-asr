@@ -5,6 +5,7 @@ torch==2.7.0
 torchaudio==2.7.0
 huggingface-hub==0.32.3
 soundfile==0.13.1
+pandas==2.2.3
 
 # Install ffmpeg
 # For macOS: brew install ffmpeg
