@@ -45,3 +45,15 @@ def save_mp3_file(file, upload_folder="uploaded_files"):
 
     file.stream.seek(0)
     file.save(file_path)
+
+
+def list_files_in_directory(directory_path):
+    try:
+        files = [
+            os.path.join(directory_path, f) for f in os.listdir(directory_path)
+            if os.path.isfile(os.path.join(directory_path, f))
+        ]
+        return files
+    except Exception as e:
+        logger.error(f"Error reading directory {directory_path}: {e}")
+        return []

@@ -56,8 +56,8 @@ def asr():
         return make_response(code=400,
                              message="Uploaded file is not a valid MP3 audio")
 
-    # Save mp3 file after checking its validity
-    save_mp3_file(file)
+    # # Save mp3 file after checking its validity
+    # save_mp3_file(file)
 
     # ASR Logic
     result = transcribe_audio(waveform, sampling_rate, processor, model)
