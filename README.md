@@ -18,3 +18,5 @@
   ```
   python manage.py run --port 8000 --reload
   ```
+
+python -m ipykernel install --user

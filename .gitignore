@@ -197,3 +197,4 @@ cython_debug/
 datasets/*
 !datasets/*.txt
 *.crt
+*.arrow
