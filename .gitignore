@@ -198,3 +198,4 @@ datasets/*
 !datasets/*.txt
 *.crt
 *.arrow
+checkpoints/*
