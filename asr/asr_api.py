@@ -24,8 +24,12 @@ def backend_factory() -> requests.Session:
 configure_http_backend(backend_factory=backend_factory)
 
 # Load the model first
-processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-960h")
-model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-large-960h")
+# processor = Wav2Vec2Processor.from_pretrained("facebook/wav2vec2-large-960h")
+# model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-large-960h")
+processor = Wav2Vec2Processor.from_pretrained(
+    "../asr-train/saved_models/wav2vec2-large-960h-cv")
+model = Wav2Vec2ForCTC.from_pretrained(
+    "../asr-train/saved_models/wav2vec2-large-960h-cv")
 
 REQUIRED_SAMPLING_RATE = 16000
 
