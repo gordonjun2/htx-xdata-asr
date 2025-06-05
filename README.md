@@ -38,3 +38,7 @@
   python -m ipykernel install --user
   ```
 - Please `cd` into the respective folders to see their _README.md_.
+
+## Notes
+
+- Git LFS is used to push the finetuned model found at _./asr-train/saved_models/wav2vec2-large-960h-cv_ to GitHub.

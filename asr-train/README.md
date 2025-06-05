@@ -12,6 +12,7 @@
 
 - Copy the finetuned model from Task 3a (inside _./checkpoints_) to a new folder called _./saved_models_.
 - Rename the finetuned model to _wav2vec2-large-960h-cv_.
+- Note that Git LFS is used to push the model to GitHub.
 
 ## Task 3c Usage Instruction
 
